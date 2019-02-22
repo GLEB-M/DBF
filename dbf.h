@@ -112,7 +112,7 @@ public:
 	CDBFTable();
 	~CDBFTable();
 
-	bool Open( const char *szFileName, bool bWrite, bool bExclusive );
+	bool Open( const char *szFileName, bool bWrite = false, bool bExclusive = false );
 	void Close( bool bNoClearLastError = false );
 	bool HasCDX( );
 
