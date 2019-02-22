@@ -1,4 +1,4 @@
-#include "db_utils.h"
+п»ї#include "db_utils.h"
 
 DWORD DBUtils::FileOpenA( const char *szFileName, bool bWriteEnable, bool bExclusive, HANDLE *hFile )
 {
@@ -69,20 +69,20 @@ DWORD DBUtils::WriteBuffer( HANDLE hFile, unsigned int nOffset, unsigned char *p
 {
 	DWORD nCurOffset, dwError, dwWritten;
 
-	nCurOffset = FileSeek(hFile, 0, FILE_CURRENT); // текущая позиция
+	nCurOffset = FileSeek(hFile, 0, FILE_CURRENT); // С‚РµРєСѓС‰Р°СЏ РїРѕР·РёС†РёСЏ
 
-	if ( FileSeek(hFile, nOffset, FILE_BEGIN) != nOffset ) // новая позиция
+	if ( FileSeek(hFile, nOffset, FILE_BEGIN) != nOffset ) // РЅРѕРІР°СЏ РїРѕР·РёС†РёСЏ
 		return GetLastError();
 
-	dwError = FileWrite(hFile, pBuffer, nSize, &dwWritten); // пишем
+	dwError = FileWrite(hFile, pBuffer, nSize, &dwWritten); // РїРёС€РµРј
 	if ( dwError != ERROR_SUCCESS || dwWritten != nSize )
 	{
 		dwError = GetLastError();
-		FileSeek(hFile, nCurOffset, FILE_BEGIN); // восстанавливаем позицию
+		FileSeek(hFile, nCurOffset, FILE_BEGIN); // РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕР·РёС†РёСЋ
 		return dwError;
 	}
 
-	if ( FileSeek(hFile, nCurOffset, FILE_BEGIN) != nCurOffset ) // восстанавливаем позицию
+	if ( FileSeek(hFile, nCurOffset, FILE_BEGIN) != nCurOffset ) // РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕР·РёС†РёСЋ
 		return GetLastError();
 
 	return ERROR_SUCCESS;
@@ -131,7 +131,7 @@ DBUtils::date_time_t DBUtils::ConvertToDateTime( unsigned char *data )
 	{
 		int a, b, c, d, e, m;
 		
-		// Преобразование из юлианской даты
+		// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР· СЋР»РёР°РЅСЃРєРѕР№ РґР°С‚С‹
 		a = date + 32044;
 		b = (4 * a + 3) / 146097;
 		c = a - ((146097 * b) / 4);
@@ -146,7 +146,7 @@ DBUtils::date_time_t DBUtils::ConvertToDateTime( unsigned char *data )
 
 	if ( time )
 	{
-		// Преобразование из миллисекунд
+		// РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РёР· РјРёР»Р»РёСЃРµРєСѓРЅРґ
 		dt.hours = time / 3600000;
 		dt.minutes = (time - (dt.hours * 3600000)) / 60000;
 		dt.seconds = (time - (dt.hours * 3600000) - (dt.minutes * 60000)) / 1000;
@@ -194,7 +194,7 @@ string DBUtils::ErrorMessage( DWORD dwErrorCode )
 	sMsg = (LPCSTR)pBuffer;
 	LocalFree(pBuffer);
 
-	// убираем 13+10 в конце строки
+	// СѓР±РёСЂР°РµРј 13+10 РІ РєРѕРЅС†Рµ СЃС‚СЂРѕРєРё
 	size_t pos = sMsg.find_last_not_of("\r\n");
 	if ( pos != std::wstring::npos )
 		sMsg.resize(pos+1);

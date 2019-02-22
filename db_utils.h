@@ -1,4 +1,4 @@
-#ifndef _DB_UTILS_
+п»ї#ifndef _DB_UTILS_
 #define _DB_UTILS_
 
 #include <windows.h>
@@ -11,7 +11,7 @@ using namespace std;
 
 namespace DBUtils
 {
-	// Дата
+	// Р”Р°С‚Р°
 	struct date_t
 	{
 		unsigned char  day;
@@ -19,7 +19,7 @@ namespace DBUtils
 		unsigned short year;
 	};
 
-	// Дата/Время
+	// Р”Р°С‚Р°/Р’СЂРµРјСЏ
 	struct date_time_t
 	{
 		unsigned char  day;

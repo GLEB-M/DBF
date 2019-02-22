@@ -1,4 +1,4 @@
-#include "cdx.h"
+п»ї#include "cdx.h"
 
 //
 // CCompoundIndex
@@ -24,13 +24,13 @@ CCompoundIndex::~CCompoundIndex( )
 }
 
 //
-// Открытие индексного файла
+// РћС‚РєСЂС‹С‚РёРµ РёРЅРґРµРєСЃРЅРѕРіРѕ С„Р°Р№Р»Р°
 //
 bool CCompoundIndex::Open( const char *szFileName, bool bExclusive )
 {
 	DWORD dwError;
 
-	// Закрываем предыдущий открытый индексный файл
+	// Р—Р°РєСЂС‹РІР°РµРј РїСЂРµРґС‹РґСѓС‰РёР№ РѕС‚РєСЂС‹С‚С‹Р№ РёРЅРґРµРєСЃРЅС‹Р№ С„Р°Р№Р»
 	Close();
 	
 	if ( (dwError = FileOpenA(szFileName, false, bExclusive, &m_hFile)) != ERROR_SUCCESS )
@@ -47,10 +47,10 @@ bool CCompoundIndex::Open( const char *szFileName, bool bExclusive )
 
 	m_FileSize = FileSize(m_hFile);
 
-	if ( !ReadHeader(0, &m_Header) ) // Читаем заголовок корневого узла
+	if ( !ReadHeader(0, &m_Header) ) // Р§РёС‚Р°РµРј Р·Р°РіРѕР»РѕРІРѕРє РєРѕСЂРЅРµРІРѕРіРѕ СѓР·Р»Р°
 		return false;
 
-	if ( !ReadTags() ) // Читаем тэги
+	if ( !ReadTags() ) // Р§РёС‚Р°РµРј С‚СЌРіРё
 		return false;
 
 	m_sErrorMessage = "";
@@ -58,7 +58,7 @@ bool CCompoundIndex::Open( const char *szFileName, bool bExclusive )
 }
 
 //
-// Закрытие индексного файла
+// Р—Р°РєСЂС‹С‚РёРµ РёРЅРґРµРєСЃРЅРѕРіРѕ С„Р°Р№Р»Р°
 //
 void CCompoundIndex::Close( )
 {
@@ -74,7 +74,7 @@ void CCompoundIndex::Close( )
 }
 
 //
-// Чтение заголовка узла
+// Р§С‚РµРЅРёРµ Р·Р°РіРѕР»РѕРІРєР° СѓР·Р»Р°
 //
 bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 {
@@ -97,7 +97,7 @@ bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " неожиданный конец файла";
+		m_sErrorMessage += " РЅРµРѕР¶РёРґР°РЅРЅС‹Р№ РєРѕРЅРµС† С„Р°Р№Р»Р°";
 		return false;
 	}
 
@@ -106,7 +106,7 @@ bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " файл не является компактным индексом";
+		m_sErrorMessage += " С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ РєРѕРјРїР°РєС‚РЅС‹Рј РёРЅРґРµРєСЃРѕРј";
 		return false;
 	}
 
@@ -115,7 +115,7 @@ bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " файл не является составным индексом";
+		m_sErrorMessage += " С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ СЃРѕСЃС‚Р°РІРЅС‹Рј РёРЅРґРµРєСЃРѕРј";
 		return false;
 	}
 
@@ -124,7 +124,7 @@ bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " длина ключа должна быть в пределах 1..240";
+		m_sErrorMessage += " РґР»РёРЅР° РєР»СЋС‡Р° РґРѕР»Р¶РЅР° Р±С‹С‚СЊ РІ РїСЂРµРґРµР»Р°С… 1..240";
 		return false;
 	}
 	
@@ -133,7 +133,7 @@ bool CCompoundIndex::ReadHeader( unsigned int nAddress, cdx_header_t *Header )
 }
 
 //
-// Процедура чтение тэгов
+// РџСЂРѕС†РµРґСѓСЂР° С‡С‚РµРЅРёРµ С‚СЌРіРѕРІ
 //
 void TagEnumProc( cdx_key_t *Key, void *Param )
 {
@@ -147,23 +147,23 @@ void TagEnumProc( cdx_key_t *Key, void *Param )
 }
 
 //
-// Чтение тэгов
+// Р§С‚РµРЅРёРµ С‚СЌРіРѕРІ
 //
 bool CCompoundIndex::ReadTags( )
 {
-	ClearTags(); // освобождаем память 
+	ClearTags(); // РѕСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ 
 
-	if ( !ReadKeys(m_Header.root_node, m_Header.key_len, TagEnumProc) ) // Читаем тэги 
+	if ( !ReadKeys(m_Header.root_node, m_Header.key_len, TagEnumProc) ) // Р§РёС‚Р°РµРј С‚СЌРіРё 
 	{
 		ClearTags();
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " ошибка при чтении ключей";
+		m_sErrorMessage += " РѕС€РёР±РєР° РїСЂРё С‡С‚РµРЅРёРё РєР»СЋС‡РµР№";
 		return false;
 	}
 
-	sort(m_Tags.begin(), m_Tags.end(), SortTagsProc); // Сортируем по адресу заголовков тэгов
+	sort(m_Tags.begin(), m_Tags.end(), SortTagsProc); // РЎРѕСЂС‚РёСЂСѓРµРј РїРѕ Р°РґСЂРµСЃСѓ Р·Р°РіРѕР»РѕРІРєРѕРІ С‚СЌРіРѕРІ
 
 	m_TagsCount = (unsigned int)m_Tags.size();
 
@@ -172,7 +172,7 @@ bool CCompoundIndex::ReadTags( )
 }
 
 //
-// Освобождение памяти списка тэгов
+// РћСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё СЃРїРёСЃРєР° С‚СЌРіРѕРІ
 //
 void CCompoundIndex::ClearTags( )
 {
@@ -184,12 +184,12 @@ void CCompoundIndex::ClearTags( )
 }
 
 //
-// Листья
+// Р›РёСЃС‚СЊСЏ
 //
 bool CCompoundIndex::ReadExteriorKeys( unsigned char *pNode, unsigned int nKeyLen, vector <cdx_key_t *> &Keys )
 {
 	cdx_exterior_node_t *ExtNode = (cdx_exterior_node_t *)pNode;
-	unsigned long long Entry; // 8-ми байтовая переменная
+	unsigned long long Entry; // 8-РјРё Р±Р°Р№С‚РѕРІР°СЏ РїРµСЂРµРјРµРЅРЅР°СЏ
 
 	unsigned int nOffset = 488;
 
@@ -217,21 +217,21 @@ bool CCompoundIndex::ReadExteriorKeys( unsigned char *pNode, unsigned int nKeyLe
 
 		memset(aKey, 0, sizeof(aKey));
 		if ( nDupCount )
-			memcpy(aKey, aKeyPrev, nDupCount); // повторяющаяся часть (берем с предыдущего ключа)
-		memcpy(aKey + nDupCount, ExtNode->keys_info + nOffset, nLen); // неповторяющаяся часть
+			memcpy(aKey, aKeyPrev, nDupCount); // РїРѕРІС‚РѕСЂСЏСЋС‰Р°СЏСЃСЏ С‡Р°СЃС‚СЊ (Р±РµСЂРµРј СЃ РїСЂРµРґС‹РґСѓС‰РµРіРѕ РєР»СЋС‡Р°)
+		memcpy(aKey + nDupCount, ExtNode->keys_info + nOffset, nLen); // РЅРµРїРѕРІС‚РѕСЂСЏСЋС‰Р°СЏСЃСЏ С‡Р°СЃС‚СЊ
 
-		// добавляем ключ
+		// РґРѕР±Р°РІР»СЏРµРј РєР»СЋС‡
 		cdx_key_t *Key = new cdx_key_t;
 		memcpy(Key->value, aKey, sizeof(aKey));
 		Key->rec_num = nRecNum;
 		Key->intra_node = 0;
 		Keys.push_back(Key);
 
-		memcpy(aKeyPrev, aKey, sizeof(aKey)); // запоминаем предыдущий ключ
+		memcpy(aKeyPrev, aKey, sizeof(aKey)); // Р·Р°РїРѕРјРёРЅР°РµРј РїСЂРµРґС‹РґСѓС‰РёР№ РєР»СЋС‡
 
 		pEntryData += ExtNode->rec_num_dup_trail_size;
 
-		if ( pEntryData - ExtNode->keys_info > 488 ) // Проверим превышение размера в случае поврежденного файла
+		if ( pEntryData - ExtNode->keys_info > 488 ) // РџСЂРѕРІРµСЂРёРј РїСЂРµРІС‹С€РµРЅРёРµ СЂР°Р·РјРµСЂР° РІ СЃР»СѓС‡Р°Рµ РїРѕРІСЂРµР¶РґРµРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
 			return false;
 	}
 
@@ -239,7 +239,7 @@ bool CCompoundIndex::ReadExteriorKeys( unsigned char *pNode, unsigned int nKeyLe
 }
 
 //
-// Каталоги
+// РљР°С‚Р°Р»РѕРіРё
 //
 bool CCompoundIndex::ReadInteriorKeys( unsigned char *pNode, unsigned int nKeyLen, vector <cdx_key_t *> &Keys )
 {
@@ -262,7 +262,7 @@ bool CCompoundIndex::ReadInteriorKeys( unsigned char *pNode, unsigned int nKeyLe
 		memcpy(&nRecNum, pEntryData + nKeyLen, 4);
 		memcpy(&nIntraNode, pEntryData + nKeyLen + 4, 4);
 		
-		// добавляем ключ
+		// РґРѕР±Р°РІР»СЏРµРј РєР»СЋС‡
 		cdx_key_t *Key = new cdx_key_t;
 		memcpy(Key->value, aKey, sizeof(aKey));
 		Key->rec_num = SwapBytes32(nRecNum);
@@ -271,7 +271,7 @@ bool CCompoundIndex::ReadInteriorKeys( unsigned char *pNode, unsigned int nKeyLe
 		
 		pEntryData += (nKeyLen + 4 + 4);
 
-		if ( pEntryData - IntNode->keys_info > 500 ) // Проверим превышение размера в случае поврежденного файла
+		if ( pEntryData - IntNode->keys_info > 500 ) // РџСЂРѕРІРµСЂРёРј РїСЂРµРІС‹С€РµРЅРёРµ СЂР°Р·РјРµСЂР° РІ СЃР»СѓС‡Р°Рµ РїРѕРІСЂРµР¶РґРµРЅРЅРѕРіРѕ С„Р°Р№Р»Р°
 			return false;
 	}
 
@@ -279,7 +279,7 @@ bool CCompoundIndex::ReadInteriorKeys( unsigned char *pNode, unsigned int nKeyLe
 }
 
 //
-// Чтение ключей
+// Р§С‚РµРЅРёРµ РєР»СЋС‡РµР№
 //
 bool CCompoundIndex::ReadKeys( unsigned int nAddress, unsigned int nKeyLen, void proc(cdx_key_t *key, void *param) )
 {
@@ -291,7 +291,7 @@ bool CCompoundIndex::ReadKeys( unsigned int nAddress, unsigned int nKeyLen, void
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " адрес узла превышает или равен размеру файла";
+		m_sErrorMessage += " Р°РґСЂРµСЃ СѓР·Р»Р° РїСЂРµРІС‹С€Р°РµС‚ РёР»Рё СЂР°РІРµРЅ СЂР°Р·РјРµСЂСѓ С„Р°Р№Р»Р°";
 		return false;
 	}
 
@@ -312,7 +312,7 @@ bool CCompoundIndex::ReadKeys( unsigned int nAddress, unsigned int nKeyLen, void
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += " неожиданный конец файла";
+		m_sErrorMessage += " РЅРµРѕР¶РёРґР°РЅРЅС‹Р№ РєРѕРЅРµС† С„Р°Р№Р»Р°";
 		return false;
 	}
 
@@ -349,7 +349,7 @@ bool CCompoundIndex::ReadKeys( unsigned int nAddress, unsigned int nKeyLen, void
 }
 
 //
-// Проверка номера (тэга) индекса
+// РџСЂРѕРІРµСЂРєР° РЅРѕРјРµСЂР° (С‚СЌРіР°) РёРЅРґРµРєСЃР°
 //
 bool CCompoundIndex::CheckTagNum( int nTagNum )
 {
@@ -357,7 +357,7 @@ bool CCompoundIndex::CheckTagNum( int nTagNum )
 }
 
 // 
-// Количество тэгов
+// РљРѕР»РёС‡РµСЃС‚РІРѕ С‚СЌРіРѕРІ
 //
 int CCompoundIndex::GetTagsCount( )
 {
@@ -365,7 +365,7 @@ int CCompoundIndex::GetTagsCount( )
 }
 
 // 
-// Имя тэга по номеру
+// РРјСЏ С‚СЌРіР° РїРѕ РЅРѕРјРµСЂСѓ
 //
 const char *CCompoundIndex::GetTagName( int nTagNum )
 {
@@ -376,7 +376,7 @@ const char *CCompoundIndex::GetTagName( int nTagNum )
 }
 
 //
-// Процедура сортировки тэгов 
+// РџСЂРѕС†РµРґСѓСЂР° СЃРѕСЂС‚РёСЂРѕРІРєРё С‚СЌРіРѕРІ 
 //
 bool CCompoundIndex::SortTagsProc( cdx_key_t *i, cdx_key_t *j ) 
 { 
@@ -385,7 +385,7 @@ bool CCompoundIndex::SortTagsProc( cdx_key_t *i, cdx_key_t *j )
 
 
 // 
-//Сообщение о последней ошибке
+//РЎРѕРѕР±С‰РµРЅРёРµ Рѕ РїРѕСЃР»РµРґРЅРµР№ РѕС€РёР±РєРµ
 //
 string CCompoundIndex::GetLastErrorMessage( )
 {

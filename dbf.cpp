@@ -1,4 +1,4 @@
-#include "dbf.h"
+п»ї#include "dbf.h"
 
 //
 // CDBFTable
@@ -45,16 +45,16 @@ CDBFTable::~CDBFTable()
 }
 
 // 
-// Открытие таблицы
+// РћС‚РєСЂС‹С‚РёРµ С‚Р°Р±Р»РёС†С‹
 //
 bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 {
 	DWORD dwError;
 
-	// Закрываем предыдущую открытую таблицу
+	// Р—Р°РєСЂС‹РІР°РµРј РїСЂРµРґС‹РґСѓС‰СѓСЋ РѕС‚РєСЂС‹С‚СѓСЋ С‚Р°Р±Р»РёС†Сѓ
 	Close(); 
 
-	// Имя таблицы, имя файла таблицы, путь к таблице
+	// РРјСЏ С‚Р°Р±Р»РёС†С‹, РёРјСЏ С„Р°Р№Р»Р° С‚Р°Р±Р»РёС†С‹, РїСѓС‚СЊ Рє С‚Р°Р±Р»РёС†Рµ
 	strcpy_s(m_szPath, MAX_PATH, szFileName);  
 	for ( int i = (int)strlen(m_szPath) - 1; i >= 0; --i )
 	{
@@ -77,7 +77,7 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 		}
 	}
 	
-	// Открываем
+	// РћС‚РєСЂС‹РІР°РµРј
 	if ( (dwError = FileOpenA(szFileName, bWrite, bExclusive, &m_hDBFFile)) != ERROR_SUCCESS )
 	{
 		m_sErrorMessage = __FUNCTION__;
@@ -88,24 +88,24 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 		goto failure;
 	}
 
-	if ( FileSize(m_hDBFFile) < (32+32+1+263) ) // если размер менее чем 328 (заголовок+описание хотяб одного поля+признак окончания полей+ссылка на контейнер), то не рассматриваем этот файла как DBF
+	if ( FileSize(m_hDBFFile) < (32+32+1+263) ) // РµСЃР»Рё СЂР°Р·РјРµСЂ РјРµРЅРµРµ С‡РµРј 328 (Р·Р°РіРѕР»РѕРІРѕРє+РѕРїРёСЃР°РЅРёРµ С…РѕС‚СЏР± РѕРґРЅРѕРіРѕ РїРѕР»СЏ+РїСЂРёР·РЅР°Рє РѕРєРѕРЅС‡Р°РЅРёСЏ РїРѕР»РµР№+СЃСЃС‹Р»РєР° РЅР° РєРѕРЅС‚РµР№РЅРµСЂ), С‚Рѕ РЅРµ СЂР°СЃСЃРјР°С‚СЂРёРІР°РµРј СЌС‚РѕС‚ С„Р°Р№Р»Р° РєР°Рє DBF
 	{
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += szFileName;
-		m_sErrorMessage += " файл не является DBF, так как его размер менее 328 байт";
+		m_sErrorMessage += " С„Р°Р№Р» РЅРµ СЏРІР»СЏРµС‚СЃСЏ DBF, С‚Р°Рє РєР°Рє РµРіРѕ СЂР°Р·РјРµСЂ РјРµРЅРµРµ 328 Р±Р°Р№С‚";
 		goto failure;
 	}
 
-	// Читаем заголовок
+	// Р§РёС‚Р°РµРј Р·Р°РіРѕР»РѕРІРѕРє
 	if ( !ReadHeader() )
 		goto failure;
 
-	// Читаем описание полей
+	// Р§РёС‚Р°РµРј РѕРїРёСЃР°РЅРёРµ РїРѕР»РµР№
 	if ( !ReadFields() )
 		goto failure;
 
-	// Если есть MEMO поля
+	// Р•СЃР»Рё РµСЃС‚СЊ MEMO РїРѕР»СЏ
 	if ( m_DBFHeader.flags & DBF_HAS_MEMO )
 	{
 		char szMemoFileName[MAX_PATH];
@@ -115,7 +115,7 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 		{
 			if ( szMemoFileName[i] == '.' )
 			{
-				// Подберем нужное расширение
+				// РџРѕРґР±РµСЂРµРј РЅСѓР¶РЅРѕРµ СЂР°СЃС€РёСЂРµРЅРёРµ
 				if ( !_stricmp(szMemoFileName + i + 1, "PJX") )
 					strcpy_s(szMemoFileName + i + 1, 4, "PJT");
 				else if ( !_stricmp(szMemoFileName + i + 1, "DBF") )
@@ -129,7 +129,7 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 				else
 				{
 					m_sErrorMessage = __FUNCTION__;
-					m_sErrorMessage += ": не найден соответствующий MEMO файл: ";
+					m_sErrorMessage += ": РЅРµ РЅР°Р№РґРµРЅ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РёР№ MEMO С„Р°Р№Р»: ";
 					m_sErrorMessage += szMemoFileName;
 					goto failure;
 				}
@@ -137,7 +137,7 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 			}
 		}
 
-		// Открываем MEMO
+		// РћС‚РєСЂС‹РІР°РµРј MEMO
 		strcpy_s(m_szMemoFileName, MAX_PATH, szMemoFileName);
 		if ( (dwError = FileOpenA(szMemoFileName, bWrite, bExclusive, &m_hFPTFile)) != ERROR_SUCCESS )
 		{
@@ -149,12 +149,12 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 			goto failure;
 		}
 
-		// Читаем MEMO заголовок
+		// Р§РёС‚Р°РµРј MEMO Р·Р°РіРѕР»РѕРІРѕРє
 		if ( !ReadMemoHeader() )
 			goto failure;
 	}
 
-	// Если есть CDX
+	// Р•СЃР»Рё РµСЃС‚СЊ CDX
 	if ( m_DBFHeader.flags & DBF_HAS_CDX )
 	{
 		char szCDXFileName[MAX_PATH];
@@ -169,7 +169,7 @@ bool CDBFTable::Open( const char *szFileName, bool bWrite, bool bExclusive )
 		}
 	}
 
-	// Выделим память под данные записи
+	// Р’С‹РґРµР»РёРј РїР°РјСЏС‚СЊ РїРѕРґ РґР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
 	m_RecData = new unsigned char[m_DBFHeader.rec_size]; 
 
 	m_sErrorMessage = "";
@@ -182,7 +182,7 @@ failure:
 }
 
 //
-// Закрытие таблицы
+// Р—Р°РєСЂС‹С‚РёРµ С‚Р°Р±Р»РёС†С‹
 //
 void CDBFTable::Close( bool bNoClearLastError )
 {
@@ -234,7 +234,7 @@ void CDBFTable::Close( bool bNoClearLastError )
 }
 
 //
-// Таблица имеет составной индекс
+// РўР°Р±Р»РёС†Р° РёРјРµРµС‚ СЃРѕСЃС‚Р°РІРЅРѕР№ РёРЅРґРµРєСЃ
 //
 bool CDBFTable::HasCDX( )
 {
@@ -242,22 +242,22 @@ bool CDBFTable::HasCDX( )
 }
 
 // 
-// Блокировка файла таблицы
+// Р‘Р»РѕРєРёСЂРѕРІРєР° С„Р°Р№Р»Р° С‚Р°Р±Р»РёС†С‹
 //
 bool CDBFTable::Lock( )
 {
 	if ( m_hDBFFile == INVALID_HANDLE_VALUE )
-		return false; // таблица не открыта
+		return false; // С‚Р°Р±Р»РёС†Р° РЅРµ РѕС‚РєСЂС‹С‚Р°
 
 	int attempts = m_LockAttemptMax;
 
 	while ( true )
 	{
 		//
-		//  Выяснил, что для атомарного доступа к таблице, Visual FoxPro блокирует 1 байт по смещению 2Гб-1, т.е. 0x7FFFFFFE.
-		//  Пока заблокирован этот байт, другой экземпяр Visual FoxPro, обращающийся к таблице, ожидает блокировки.
-		//  Эти блокировки делаются при любом обращении к таблице, когда она открыта в shared mode
-		//  Если открыта монопольно, то этот механизм не используется.
+		//  Р’С‹СЏСЃРЅРёР», С‡С‚Рѕ РґР»СЏ Р°С‚РѕРјР°СЂРЅРѕРіРѕ РґРѕСЃС‚СѓРїР° Рє С‚Р°Р±Р»РёС†Рµ, Visual FoxPro Р±Р»РѕРєРёСЂСѓРµС‚ 1 Р±Р°Р№С‚ РїРѕ СЃРјРµС‰РµРЅРёСЋ 2Р“Р±-1, С‚.Рµ. 0x7FFFFFFE.
+		//  РџРѕРєР° Р·Р°Р±Р»РѕРєРёСЂРѕРІР°РЅ СЌС‚РѕС‚ Р±Р°Р№С‚, РґСЂСѓРіРѕР№ СЌРєР·РµРјРїСЏСЂ Visual FoxPro, РѕР±СЂР°С‰Р°СЋС‰РёР№СЃСЏ Рє С‚Р°Р±Р»РёС†Рµ, РѕР¶РёРґР°РµС‚ Р±Р»РѕРєРёСЂРѕРІРєРё.
+		//  Р­С‚Рё Р±Р»РѕРєРёСЂРѕРІРєРё РґРµР»Р°СЋС‚СЃСЏ РїСЂРё Р»СЋР±РѕРј РѕР±СЂР°С‰РµРЅРёРё Рє С‚Р°Р±Р»РёС†Рµ, РєРѕРіРґР° РѕРЅР° РѕС‚РєСЂС‹С‚Р° РІ shared mode
+		//  Р•СЃР»Рё РѕС‚РєСЂС‹С‚Р° РјРѕРЅРѕРїРѕР»СЊРЅРѕ, С‚Рѕ СЌС‚РѕС‚ РјРµС…Р°РЅРёР·Рј РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ.
 		//
 		if ( FileLock(m_hDBFFile, 0x7FFFFFFE, 1) ) 
 			return true;
@@ -272,7 +272,7 @@ bool CDBFTable::Lock( )
 }
 
 // 
-// Снятие блокировки
+// РЎРЅСЏС‚РёРµ Р±Р»РѕРєРёСЂРѕРІРєРё
 //
 bool CDBFTable::Unlock( )
 {
@@ -280,7 +280,7 @@ bool CDBFTable::Unlock( )
 }
 
 // 
-// Если указатель за пределами первой записи
+// Р•СЃР»Рё СѓРєР°Р·Р°С‚РµР»СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё
 //
 bool CDBFTable::BeginOfFile( )
 {
@@ -288,7 +288,7 @@ bool CDBFTable::BeginOfFile( )
 }
 
 // 
-// Если указатель за пределами последней записи
+// Р•СЃР»Рё СѓРєР°Р·Р°С‚РµР»СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё РїРѕСЃР»РµРґРЅРµР№ Р·Р°РїРёСЃРё
 //
 bool CDBFTable::EndOfFile( )
 {
@@ -296,7 +296,7 @@ bool CDBFTable::EndOfFile( )
 }
 
 // 
-// Установка указателя на первую запись
+// РЈСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РїРµСЂРІСѓСЋ Р·Р°РїРёСЃСЊ
 //
 bool CDBFTable::GoTop( )
 {
@@ -304,7 +304,7 @@ bool CDBFTable::GoTop( )
 }
 
 // 
-// Установка указателя на последнюю запись
+// РЈСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РїРѕСЃР»РµРґРЅСЋСЋ Р·Р°РїРёСЃСЊ
 //
 bool CDBFTable::GoBottom( )
 {
@@ -312,7 +312,7 @@ bool CDBFTable::GoBottom( )
 }
 
 //
-// Установка указателя на указанную запись
+// РЈСЃС‚Р°РЅРѕРІРєР° СѓРєР°Р·Р°С‚РµР»СЏ РЅР° СѓРєР°Р·Р°РЅРЅСѓСЋ Р·Р°РїРёСЃСЊ
 //
 bool CDBFTable::GoTo( int nPos )
 {
@@ -320,7 +320,7 @@ bool CDBFTable::GoTo( int nPos )
 }
 
 // 
-// Пропуск указанного количества записей
+// РџСЂРѕРїСѓСЃРє СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·Р°РїРёСЃРµР№
 //
 bool CDBFTable::Skip( int nCount )
 {
@@ -328,7 +328,7 @@ bool CDBFTable::Skip( int nCount )
 }
 
 // 
-// Пропуск указанного количества записей без перечитывания заголовка
+// РџСЂРѕРїСѓСЃРє СѓРєР°Р·Р°РЅРЅРѕРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° Р·Р°РїРёСЃРµР№ Р±РµР· РїРµСЂРµС‡РёС‚С‹РІР°РЅРёСЏ Р·Р°РіРѕР»РѕРІРєР°
 //
 bool CDBFTable::Skip2( int nCount ) 
 {
@@ -336,20 +336,20 @@ bool CDBFTable::Skip2( int nCount )
 }
 
 // 
-// Количество полей таблицы
+// РљРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№ С‚Р°Р±Р»РёС†С‹
 //
 int CDBFTable::GetFieldsCount( )
 {
 	int nCount = m_FieldsCount;
 
-	if ( nCount > 0 && (m_Fields[nCount-1].flags & COLUMN_SYSTEM) ) // Если последнее поле системное, игнорируем его
+	if ( nCount > 0 && (m_Fields[nCount-1].flags & COLUMN_SYSTEM) ) // Р•СЃР»Рё РїРѕСЃР»РµРґРЅРµРµ РїРѕР»Рµ СЃРёСЃС‚РµРјРЅРѕРµ, РёРіРЅРѕСЂРёСЂСѓРµРј РµРіРѕ
 		nCount -= 1;
 
 	return nCount;
 }
 
 //
-// Тип поля
+// РўРёРї РїРѕР»СЏ
 //
 char CDBFTable::GetFieldType( int nFieldNum )
 {
@@ -360,7 +360,7 @@ char CDBFTable::GetFieldType( int nFieldNum )
 }
 
 // 
-// Количество записей таблицы (из заголовка)
+// РљРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїРёСЃРµР№ С‚Р°Р±Р»РёС†С‹ (РёР· Р·Р°РіРѕР»РѕРІРєР°)
 // 
 int CDBFTable::RecCount( )
 {
@@ -369,7 +369,7 @@ int CDBFTable::RecCount( )
 }
 
 // 
-// Чтение записи (в m_RecData)
+// Р§С‚РµРЅРёРµ Р·Р°РїРёСЃРё (РІ m_RecData)
 //
 bool CDBFTable::Read( )
 {
@@ -379,32 +379,32 @@ bool CDBFTable::Read( )
 	if ( m_hDBFFile == INVALID_HANDLE_VALUE )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": таблица не открыта";
+		m_sErrorMessage += ": С‚Р°Р±Р»РёС†Р° РЅРµ РѕС‚РєСЂС‹С‚Р°";
 		return false; // 
 	}
 
-	// Позиционируем
+	// РџРѕР·РёС†РёРѕРЅРёСЂСѓРµРј
 	if ( m_RecNo < 0 || m_RecNo >= (int)m_DBFHeader.rec_count )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": указатель записи находится за пределами допустимого диапазона";
+		m_sErrorMessage += ": СѓРєР°Р·Р°С‚РµР»СЊ Р·Р°РїРёСЃРё РЅР°С…РѕРґРёС‚СЃСЏ Р·Р° РїСЂРµРґРµР»Р°РјРё РґРѕРїСѓСЃС‚РёРјРѕРіРѕ РґРёР°РїР°Р·РѕРЅР°";
 		return false;
 	}
 
 	nPos = m_DBFHeader.rec_offset + (m_DBFHeader.rec_size * m_RecNo);
 
-	// Становимся на нужную запись
+	// РЎС‚Р°РЅРѕРІРёРјСЃСЏ РЅР° РЅСѓР¶РЅСѓСЋ Р·Р°РїРёСЃСЊ
 	if ( FileSeek(m_hDBFFile, nPos, FILE_BEGIN) != nPos )
 	{
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": FileSeek failed!";
-		return false; // что-то пошло не так
+		return false; // С‡С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє
 	}
 
-	// Читаем данные записи
+	// Р§РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Р·Р°РїРёСЃРё
 	dwError = FileRead(m_hDBFFile, m_RecData, m_DBFHeader.rec_size, &dwRead);	
 
-	// Что-то пошло не так
+	// Р§С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє
 	if ( dwError != ERROR_SUCCESS || dwRead != m_DBFHeader.rec_size )
 	{
 		m_sErrorMessage = __FUNCTION__;
@@ -415,11 +415,11 @@ bool CDBFTable::Read( )
 
 	m_sErrorMessage = "";
 
-	return true; // Успешно
+	return true; // РЈСЃРїРµС€РЅРѕ
 }
 
 // 
-// Состояние записи (удалена/неудалена)
+// РЎРѕСЃС‚РѕСЏРЅРёРµ Р·Р°РїРёСЃРё (СѓРґР°Р»РµРЅР°/РЅРµСѓРґР°Р»РµРЅР°)
 //
 unsigned char CDBFTable::GetRecordStatus( )
 {
@@ -427,7 +427,7 @@ unsigned char CDBFTable::GetRecordStatus( )
 }
 
 // 
-// Ссылка на контейнер (DBC)
+// РЎСЃС‹Р»РєР° РЅР° РєРѕРЅС‚РµР№РЅРµСЂ (DBC)
 //
 const char *CDBFTable::GetBackLink( )
 {
@@ -435,7 +435,7 @@ const char *CDBFTable::GetBackLink( )
 }
 
 // 
-// Имя файла таблицы
+// РРјСЏ С„Р°Р№Р»Р° С‚Р°Р±Р»РёС†С‹
 //
 const char *CDBFTable::GetTableFileName( )
 {
@@ -443,7 +443,7 @@ const char *CDBFTable::GetTableFileName( )
 }
 
 // 
-// Проверка сущаствования поля с номером nFieldNum
+// РџСЂРѕРІРµСЂРєР° СЃСѓС‰Р°СЃС‚РІРѕРІР°РЅРёСЏ РїРѕР»СЏ СЃ РЅРѕРјРµСЂРѕРј nFieldNum
 //
 bool CDBFTable::CheckFieldNum( int nFieldNum )
 {
@@ -451,7 +451,7 @@ bool CDBFTable::CheckFieldNum( int nFieldNum )
 }
 
 // 
-// Номер поля по имени поля (-1 если не найдено)
+// РќРѕРјРµСЂ РїРѕР»СЏ РїРѕ РёРјРµРЅРё РїРѕР»СЏ (-1 РµСЃР»Рё РЅРµ РЅР°Р№РґРµРЅРѕ)
 //
 int CDBFTable::GetFieldByName( const char *szFieldName )
 {
@@ -463,7 +463,7 @@ int CDBFTable::GetFieldByName( const char *szFieldName )
 }
 
 // 
-// Имя поля по номеру (NULL при неверном номере)
+// РРјСЏ РїРѕР»СЏ РїРѕ РЅРѕРјРµСЂСѓ (NULL РїСЂРё РЅРµРІРµСЂРЅРѕРј РЅРѕРјРµСЂРµ)
 // 
 const char *CDBFTable::GetFieldName( int nFieldNum )
 {
@@ -474,7 +474,7 @@ const char *CDBFTable::GetFieldName( int nFieldNum )
 }
 
 //
-// Размер поля и количество десятичных знаков
+// Р Р°Р·РјРµСЂ РїРѕР»СЏ Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РґРµСЃСЏС‚РёС‡РЅС‹С… Р·РЅР°РєРѕРІ
 //
 bool CDBFTable::GetFieldSize( int nFieldNum, int *nSize, int *nDecimal )
 {
@@ -500,12 +500,12 @@ const char *CDBFTable::GetChar( int nFieldNum )
 	
 	dbf_field_t *Field =  &m_Fields[nFieldNum];
 
-	// TODO: проверить тип 'C' и размер ?
+	// TODO: РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї 'C' Рё СЂР°Р·РјРµСЂ ?
 
 	memcpy(m_NoMemoData, m_RecData + Field->offset, Field->size);
 	m_NoMemoData[Field->size] = '\0';
 
-	// RTrim TODO: может сделать параметром?
+	// RTrim TODO: РјРѕР¶РµС‚ СЃРґРµР»Р°С‚СЊ РїР°СЂР°РјРµС‚СЂРѕРј?
 	for ( int i = (int)strlen((char *)m_NoMemoData) - 1; i >= 0; --i )
 	{
 		if ( m_NoMemoData[i] == ' ' )
@@ -535,7 +535,7 @@ bool CDBFTable::GetLogical( int nFieldNum )
 	if ( !CheckFieldNum(nFieldNum) )
 		return false;
 
-	// TODO: проверить тип 'L' и размер 1 ?
+	// TODO: РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї 'L' Рё СЂР°Р·РјРµСЂ 1 ?
 	
 	dbf_field_t *Field =  &m_Fields[nFieldNum];
 
@@ -564,7 +564,7 @@ double CDBFTable::GetNumeric( int nFieldNum )
 	
 	dbf_field_t *Field = &m_Fields[nFieldNum];
 
-	// TODO: проверить тип 'N' и размер на 20 ?
+	// TODO: РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї 'N' Рё СЂР°Р·РјРµСЂ РЅР° 20 ?
 
 	memcpy(m_NoMemoData, m_RecData + Field->offset, Field->size);
 	m_NoMemoData[Field->size] = '\0';
@@ -641,7 +641,7 @@ date_t CDBFTable::GetDate( int nFieldNum )
 	
 	dbf_field_t *Field = &m_Fields[nFieldNum];
 
-	// TODO: проверить тип 'D' и размер 8
+	// TODO: РїСЂРѕРІРµСЂРёС‚СЊ С‚РёРї 'D' Рё СЂР°Р·РјРµСЂ 8
 
 	return ConvertToDate(m_RecData + Field->offset);
 }
@@ -699,18 +699,18 @@ const void *CDBFTable::GetMemo( int nFieldNum, unsigned int *nDataSize )
 	if ( Field->type != MEMO_FIELD )
 		return NULL;
 
-	// Номер блока
+	// РќРѕРјРµСЂ Р±Р»РѕРєР°
 	nBlockNum = *(unsigned int *)(m_RecData + Field->offset);
 
-	// Нет данных
+	// РќРµС‚ РґР°РЅРЅС‹С…
 	if ( nBlockNum == 0 )
 		return NULL; 
 
-	// Читаем содержимое MEMO поля
+	// Р§РёС‚Р°РµРј СЃРѕРґРµСЂР¶РёРјРѕРµ MEMO РїРѕР»СЏ
 	if ( !ReadMemo(nBlockNum) )
 		return NULL;
 
-	// Размер прочитанного
+	// Р Р°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅРѕРіРѕ
 	if ( nDataSize )
 		*nDataSize = m_MemoSize;
 
@@ -730,12 +730,12 @@ const void *CDBFTable::GetMemo( const char *szFieldName, unsigned int *nDataSize
 
 
 //
-// Запись данных в поле
+// Р—Р°РїРёСЃСЊ РґР°РЅРЅС‹С… РІ РїРѕР»Рµ
 //
-// nRecNumber   - номер записи
-// nFieldNumber - номер поля
-// pData        - данные произвольного типа
-// nDataSize    - размер данных
+// nRecNumber   - РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
+// nFieldNumber - РЅРѕРјРµСЂ РїРѕР»СЏ
+// pData        - РґР°РЅРЅС‹Рµ РїСЂРѕРёР·РІРѕР»СЊРЅРѕРіРѕ С‚РёРїР°
+// nDataSize    - СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С…
 //
 bool CDBFTable::WriteRecordData( unsigned int nRecNumber, unsigned int nFieldNumber, unsigned char *pData, unsigned char nDataSize )
 {
@@ -744,21 +744,21 @@ bool CDBFTable::WriteRecordData( unsigned int nRecNumber, unsigned int nFieldNum
 	if ( nRecNumber >= m_DBFHeader.rec_count )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": некорректный номер записи";
+		m_sErrorMessage += ": РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ РЅРѕРјРµСЂ Р·Р°РїРёСЃРё";
 		return false;
 	}
 
 	if ( nFieldNumber >= m_FieldsCount )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": некорректный номер поля";
+		m_sErrorMessage += ": РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ РЅРѕРјРµСЂ РїРѕР»СЏ";
 		return false;
 	}
 
 	if ( nDataSize > m_Fields[nFieldNumber].size )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": некорректный размер данных";
+		m_sErrorMessage += ": РЅРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С…";
 		return false;
 	}
 
@@ -776,14 +776,14 @@ bool CDBFTable::WriteRecordData( unsigned int nRecNumber, unsigned int nFieldNum
 	dwError = FileWrite(m_hDBFFile, pData, nDataSize, &dwWritten);
 	if ( dwError != ERROR_SUCCESS || dwWritten != nDataSize )
 	{
-		FileSeek(m_hDBFFile, nCurrentPos, FILE_BEGIN); // Восстанавливаем позицию
+		FileSeek(m_hDBFFile, nCurrentPos, FILE_BEGIN); // Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕР·РёС†РёСЋ
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += ErrorMessage(dwError);
 		return false;
 	}
 
-	FileSeek(m_hDBFFile, nCurrentPos, FILE_BEGIN); // Восстанавливаем позицию
+	FileSeek(m_hDBFFile, nCurrentPos, FILE_BEGIN); // Р’РѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕР·РёС†РёСЋ
 
 	m_sErrorMessage = ""; // OK
 
@@ -791,14 +791,14 @@ bool CDBFTable::WriteRecordData( unsigned int nRecNumber, unsigned int nFieldNum
 }
 
 //
-// Запись номера блока 
-// nRecNumber   - номер записи
-// nFieldNumber - номер поля
-// nBlockNumber - номер блока начиная с единицы (0 - пусто)
+// Р—Р°РїРёСЃСЊ РЅРѕРјРµСЂР° Р±Р»РѕРєР° 
+// nRecNumber   - РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
+// nFieldNumber - РЅРѕРјРµСЂ РїРѕР»СЏ
+// nBlockNumber - РЅРѕРјРµСЂ Р±Р»РѕРєР° РЅР°С‡РёРЅР°СЏ СЃ РµРґРёРЅРёС†С‹ (0 - РїСѓСЃС‚Рѕ)
 //
 bool CDBFTable::WriteRecordMemoBlock( unsigned int nRecNumber, unsigned int nFieldNumber, unsigned int nBlockNumber )
 {
-	// TODO: использовать WriteRecordData
+	// TODO: РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ WriteRecordData
 	
 	DWORD nCurrentPos, nNewPos, dwError, dwWritten;
 	unsigned int nNewBlockNum;
@@ -808,7 +808,7 @@ bool CDBFTable::WriteRecordMemoBlock( unsigned int nRecNumber, unsigned int nFie
 
 	nNewPos = m_DBFHeader.rec_offset + (m_DBFHeader.rec_size * nRecNumber) + m_Fields[nFieldNumber].offset;
 
-	nNewBlockNum = SwapBytes32(nBlockNumber);  // TODO: !!!!!!!!! тут дествительно нужен Swap ????? похоже я чтото попутал
+	nNewBlockNum = SwapBytes32(nBlockNumber);  // TODO: !!!!!!!!! С‚СѓС‚ РґРµСЃС‚РІРёС‚РµР»СЊРЅРѕ РЅСѓР¶РµРЅ Swap ????? РїРѕС…РѕР¶Рµ СЏ С‡С‚РѕС‚Рѕ РїРѕРїСѓС‚Р°Р»
 
 	if ( FileSeek(m_hDBFFile, nNewPos, FILE_BEGIN) != nNewPos )
 	{
@@ -830,7 +830,7 @@ bool CDBFTable::WriteRecordMemoBlock( unsigned int nRecNumber, unsigned int nFie
 }
 
 // 
-// Сообщение о последней ошибке
+// РЎРѕРѕР±С‰РµРЅРёРµ Рѕ РїРѕСЃР»РµРґРЅРµР№ РѕС€РёР±РєРµ
 //
 string CDBFTable::GetLastErrorMessage( )
 {
@@ -840,7 +840,7 @@ string CDBFTable::GetLastErrorMessage( )
 // Private
 
 // 
-// Чтение заголовка DBF
+// Р§С‚РµРЅРёРµ Р·Р°РіРѕР»РѕРІРєР° DBF
 //
 bool CDBFTable::ReadHeader( )
 {
@@ -849,7 +849,7 @@ bool CDBFTable::ReadHeader( )
 	if ( m_hDBFFile == INVALID_HANDLE_VALUE )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": таблица не открыта";
+		m_sErrorMessage += ": С‚Р°Р±Р»РёС†Р° РЅРµ РѕС‚РєСЂС‹С‚Р°";
 		return false;
 	}
 
@@ -867,9 +867,9 @@ bool CDBFTable::ReadHeader( )
 	if ( dwRead != sizeof(m_DBFHeader) )
 	{
 		m_sErrorMessage = __FUNCTION__;
-		m_sErrorMessage += ": размер прочитанных данных (";
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… (";
 		m_sErrorMessage += IntToStr(dwRead);
-		m_sErrorMessage += ") не соответствует размеру заголовка (";
+		m_sErrorMessage += ") РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СЂР°Р·РјРµСЂСѓ Р·Р°РіРѕР»РѕРІРєР° (";
 		m_sErrorMessage += IntToStr(sizeof(m_DBFHeader));
 		m_sErrorMessage += ")";
 		return false;
@@ -877,11 +877,11 @@ bool CDBFTable::ReadHeader( )
 
 	m_sErrorMessage = "";
 
-	return true; // успешно
+	return true; // СѓСЃРїРµС€РЅРѕ
 }
 
 // 
-// Чтение структуры полей
+// Р§С‚РµРЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂС‹ РїРѕР»РµР№
 //
 bool CDBFTable::ReadFields( )
 {
@@ -894,7 +894,7 @@ bool CDBFTable::ReadFields( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += ": таблица не открыта";
+		m_sErrorMessage += ": С‚Р°Р±Р»РёС†Р° РЅРµ РѕС‚РєСЂС‹С‚Р°";
 		return false;
 	}
 	
@@ -907,14 +907,14 @@ bool CDBFTable::ReadFields( )
 		return false;
 	}
 
-	// Вычислим количество полей
+	// Р’С‹С‡РёСЃР»РёРј РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№
 	m_FieldsCount = (m_DBFHeader.rec_offset - 296) / 32;
 	if ( m_FieldsCount > MAX_FIELDS )
 	{
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += ": количество полей таблицы превышает допустимое";
+		m_sErrorMessage += ": РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕР»РµР№ С‚Р°Р±Р»РёС†С‹ РїСЂРµРІС‹С€Р°РµС‚ РґРѕРїСѓСЃС‚РёРјРѕРµ";
 		return false;
 	}
 
@@ -936,7 +936,7 @@ bool CDBFTable::ReadFields( )
 			m_sErrorMessage = __FUNCTION__;
 			m_sErrorMessage += ": ";
 			m_sErrorMessage += m_szFileName;
-			m_sErrorMessage += ": неожиданный конец файла";
+			m_sErrorMessage += ": РЅРµРѕР¶РёРґР°РЅРЅС‹Р№ РєРѕРЅРµС† С„Р°Р№Р»Р°";
 			return false;
 		}
 
@@ -945,16 +945,16 @@ bool CDBFTable::ReadFields( )
 			m_sErrorMessage = __FUNCTION__;
 			m_sErrorMessage += ": ";
 			m_sErrorMessage += m_szFileName;
-			//m_sErrorMessage += ": размер прочитанных данных меньше чем размер поля";
-			m_sErrorMessage += ": размер прочитанных данных (";
+			//m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… РјРµРЅСЊС€Рµ С‡РµРј СЂР°Р·РјРµСЂ РїРѕР»СЏ";
+			m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… (";
 			m_sErrorMessage += IntToStr(dwRead);
-			m_sErrorMessage += ") не равен размеру поля (";
+			m_sErrorMessage += ") РЅРµ СЂР°РІРµРЅ СЂР°Р·РјРµСЂСѓ РїРѕР»СЏ (";
 			m_sErrorMessage += IntToStr(sizeof(Field));
 			m_sErrorMessage += ")";
 			return false;
 		}
 
-		m_Fields.push_back(Field); // Добавляем поле в список
+		m_Fields.push_back(Field); // Р”РѕР±Р°РІР»СЏРµРј РїРѕР»Рµ РІ СЃРїРёСЃРѕРє
 	}
 
 	// Head Terminator
@@ -974,7 +974,7 @@ bool CDBFTable::ReadFields( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += ": не удалось найти Head Terminator";
+		m_sErrorMessage += ": РЅРµ СѓРґР°Р»РѕСЃСЊ РЅР°Р№С‚Рё Head Terminator";
 		return false;
 	}
 
@@ -983,7 +983,7 @@ bool CDBFTable::ReadFields( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += ": Head Terminator не равен 0x0D";
+		m_sErrorMessage += ": Head Terminator РЅРµ СЂР°РІРµРЅ 0x0D";
 		return false;
 	}
 
@@ -1004,17 +1004,17 @@ bool CDBFTable::ReadFields( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szFileName;
-		m_sErrorMessage += ": размер данных Backlink не равен 263";
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С… Backlink РЅРµ СЂР°РІРµРЅ 263";
 		return false;
 	}
 
 	m_sErrorMessage = "";
 
-	return true; // Успешно
+	return true; // РЈСЃРїРµС€РЅРѕ
 }
 
 // 
-// Чтение заголовка MEMO файла
+// Р§С‚РµРЅРёРµ Р·Р°РіРѕР»РѕРІРєР° MEMO С„Р°Р№Р»Р°
 //
 bool CDBFTable::ReadMemoHeader( )
 {
@@ -1025,7 +1025,7 @@ bool CDBFTable::ReadMemoHeader( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szMemoFileName;
-		m_sErrorMessage += ": FPT файл не открыт";
+		m_sErrorMessage += ": FPT С„Р°Р№Р» РЅРµ РѕС‚РєСЂС‹С‚";
 		return false;
 	}
 
@@ -1047,25 +1047,25 @@ bool CDBFTable::ReadMemoHeader( )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szMemoFileName;
-		m_sErrorMessage += ": размер прочитанных данных (";
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… (";
 		m_sErrorMessage += IntToStr(dwRead);
-		m_sErrorMessage += ") не соответствует размеру заголовка FPT файла (";
+		m_sErrorMessage += ") РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СЂР°Р·РјРµСЂСѓ Р·Р°РіРѕР»РѕРІРєР° FPT С„Р°Р№Р»Р° (";
 		m_sErrorMessage += IntToStr(sizeof(m_DBFHeader));
 		m_sErrorMessage += ")";
 		return false;
 	}
 
-	// меняем порядок байт
+	// РјРµРЅСЏРµРј РїРѕСЂСЏРґРѕРє Р±Р°Р№С‚
 	m_FPTHeader.next_block_num = SwapBytes32(m_FPTHeader.next_block_num);
 	m_FPTHeader.size = SwapBytes16(m_FPTHeader.size);
 
 	m_sErrorMessage = "";
 
-	return true; // успешно
+	return true; // СѓСЃРїРµС€РЅРѕ
 }
 
 // 
-// Чтение MEMO блока
+// Р§С‚РµРЅРёРµ MEMO Р±Р»РѕРєР°
 //
 bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 {
@@ -1073,7 +1073,7 @@ bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 	unsigned int nOffset;
 	DWORD dwRead, dwError;
 	
-	// Становимся на нужную позицию
+	// РЎС‚Р°РЅРѕРІРёРјСЃСЏ РЅР° РЅСѓР¶РЅСѓСЋ РїРѕР·РёС†РёСЋ
 	nOffset = m_FPTHeader.size * nBlockNum;
 	if ( FileSeek(m_hFPTFile, nOffset, FILE_BEGIN) != nOffset )
 	{
@@ -1084,7 +1084,7 @@ bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 		return false;
 	}
 
-	// Читаем заголовок блока
+	// Р§РёС‚Р°РµРј Р·Р°РіРѕР»РѕРІРѕРє Р±Р»РѕРєР°
 	dwError = FileRead(m_hFPTFile, (BYTE *)&Block, sizeof(Block), &dwRead);
 
 	if ( dwError != ERROR_SUCCESS )
@@ -1102,37 +1102,37 @@ bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szMemoFileName;
-		//m_sErrorMessage += ": неверный размер прочитанных данных заголовка MEMO блока";
-		m_sErrorMessage += ": размер прочитанных данных (";
+		//m_sErrorMessage += ": РЅРµРІРµСЂРЅС‹Р№ СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… Р·Р°РіРѕР»РѕРІРєР° MEMO Р±Р»РѕРєР°";
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… (";
 		m_sErrorMessage += IntToStr(dwRead);
-		m_sErrorMessage += ") не соответствует размеру заголовка MEMO блока (";
+		m_sErrorMessage += ") РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СЂР°Р·РјРµСЂСѓ Р·Р°РіРѕР»РѕРІРєР° MEMO Р±Р»РѕРєР° (";
 		m_sErrorMessage += IntToStr(sizeof(Block));
 		m_sErrorMessage += ")";
 		return false;
 	}
 
-	// меняем порядок байт
+	// РјРµРЅСЏРµРј РїРѕСЂСЏРґРѕРє Р±Р°Р№С‚
 	Block.type = SwapBytes32(Block.type);
 	Block.size = SwapBytes32(Block.size);
 
-	// Освобождаем память предыдущих данных
+	// РћСЃРІРѕР±РѕР¶РґР°РµРј РїР°РјСЏС‚СЊ РїСЂРµРґС‹РґСѓС‰РёС… РґР°РЅРЅС‹С…
 	if ( m_MemoData )
 		delete [] m_MemoData;
 
-	if ( Block.size > 1024*1024*100 ) // похоже что херня какая-то TODO: уточнить сколько может быть, пока поставим 100МБ
+	if ( Block.size > 1024*1024*100 ) // РїРѕС…РѕР¶Рµ С‡С‚Рѕ С…РµСЂРЅСЏ РєР°РєР°СЏ-С‚Рѕ TODO: СѓС‚РѕС‡РЅРёС‚СЊ СЃРєРѕР»СЊРєРѕ РјРѕР¶РµС‚ Р±С‹С‚СЊ, РїРѕРєР° РїРѕСЃС‚Р°РІРёРј 100РњР‘
 	{
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szMemoFileName;
-		m_sErrorMessage += ": размер данных в MEMO блоке слишком большой!";
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РґР°РЅРЅС‹С… РІ MEMO Р±Р»РѕРєРµ СЃР»РёС€РєРѕРј Р±РѕР»СЊС€РѕР№!";
 		m_MemoData = NULL;
 		return false;
 	}
 
-	// Выделяем память под данные блока
+	// Р’С‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РїРѕРґ РґР°РЅРЅС‹Рµ Р±Р»РѕРєР°
 	m_MemoData = new unsigned char[Block.size];
 
-	// Читаем данные блока
+	// Р§РёС‚Р°РµРј РґР°РЅРЅС‹Рµ Р±Р»РѕРєР°
 	dwError = FileRead(m_hFPTFile, m_MemoData, Block.size, &dwRead);
 	if ( dwError != ERROR_SUCCESS )
 	{
@@ -1149,8 +1149,8 @@ bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 		m_sErrorMessage = __FUNCTION__;
 		m_sErrorMessage += ": ";
 		m_sErrorMessage += m_szMemoFileName;
-		m_sErrorMessage += ": размер прочитанных данных не соответствует размеру указанному в заголовке MEMO блока";
-		// TODO: указать размеры
+		m_sErrorMessage += ": СЂР°Р·РјРµСЂ РїСЂРѕС‡РёС‚Р°РЅРЅС‹С… РґР°РЅРЅС‹С… РЅРµ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓРµС‚ СЂР°Р·РјРµСЂСѓ СѓРєР°Р·Р°РЅРЅРѕРјСѓ РІ Р·Р°РіРѕР»РѕРІРєРµ MEMO Р±Р»РѕРєР°";
+		// TODO: СѓРєР°Р·Р°С‚СЊ СЂР°Р·РјРµСЂС‹
 		return false;
 	}
 
@@ -1163,8 +1163,8 @@ bool CDBFTable::ReadMemo( unsigned int nBlockNum )
 }
 
 // 
-// Установка позиции
-// nRecNo - номер записи
+// РЈСЃС‚Р°РЅРѕРІРєР° РїРѕР·РёС†РёРё
+// nRecNo - РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
 //
 bool CDBFTable::Set( int nRecNo )
 {

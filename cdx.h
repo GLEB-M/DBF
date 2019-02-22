@@ -1,18 +1,18 @@
-#ifndef _CDX_H_
+п»ї#ifndef _CDX_H_
 #define _CDX_H_
 
 #include "db_utils.h"
 
 using namespace DBUtils;
 
-#define COMPACT_INDEX   0x20                // Компактный индекс
-#define COMPOUND_INDEX  0x40                // Составной индекс
+#define COMPACT_INDEX   0x20                // РљРѕРјРїР°РєС‚РЅС‹Р№ РёРЅРґРµРєСЃ
+#define COMPOUND_INDEX  0x40                // РЎРѕСЃС‚Р°РІРЅРѕР№ РёРЅРґРµРєСЃ
 
-#pragma pack(push, 1)                       // Выравнивание структур по границе 1 байта
+#pragma pack(push, 1)                       // Р’С‹СЂР°РІРЅРёРІР°РЅРёРµ СЃС‚СЂСѓРєС‚СѓСЂ РїРѕ РіСЂР°РЅРёС†Рµ 1 Р±Р°Р№С‚Р°
 
 struct cdx_header_t
 {
-	unsigned int   root_node;               // адрес корневого узла
+	unsigned int   root_node;               // Р°РґСЂРµСЃ РєРѕСЂРЅРµРІРѕРіРѕ СѓР·Р»Р°
 	unsigned int   free_node;
 	unsigned char  reserved1[4];
 	unsigned short key_len;
@@ -29,28 +29,28 @@ struct cdx_header_t
 
 struct cdx_interior_node_t
 {
-	unsigned short attributes;               // атрибуты (0, 1, 2)
-	unsigned short key_num;                  // количество ключей
-	unsigned int   left_node;                // узел слева (-1 если нет)
-	unsigned int   right_node;               // узел справа (-1 если нет)
-	unsigned char  keys_info[500];           // информация о ключах
+	unsigned short attributes;               // Р°С‚СЂРёР±СѓС‚С‹ (0, 1, 2)
+	unsigned short key_num;                  // РєРѕР»РёС‡РµСЃС‚РІРѕ РєР»СЋС‡РµР№
+	unsigned int   left_node;                // СѓР·РµР» СЃР»РµРІР° (-1 РµСЃР»Рё РЅРµС‚)
+	unsigned int   right_node;               // СѓР·РµР» СЃРїСЂР°РІР° (-1 РµСЃР»Рё РЅРµС‚)
+	unsigned char  keys_info[500];           // РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєР»СЋС‡Р°С…
 };
 
 struct cdx_exterior_node_t
 {
-	unsigned short attributes;               // атрибуты (0, 1, 2)
-	unsigned short key_num;                  // количество ключей
-	unsigned int   left_node;                // узел слева (-1 если нет)
-	unsigned int   right_node;               // узел справа (-1 если нет)
-	unsigned short free_space;               // свободное место в keys_info
-	unsigned int   rec_num_mask;             // маска для номера записи
-	unsigned char  dup_mask;                 // маска для дубирующихся частей
-	unsigned char  trail_mask;               // маска для недубирующихся частей
-	unsigned char  rec_num_bits;             // количество бит отвечающих за номер записи
-	unsigned char  dup_bits;                 // количество бит отвечающих за дубли
-	unsigned char  trail_bits;               // количество бит отвечающих за недубли
-	unsigned char  rec_num_dup_trail_size;   // количество хранящих номер записи + дубли + недубли 
-	unsigned char  keys_info[488];           // информация о ключах
+	unsigned short attributes;               // Р°С‚СЂРёР±СѓС‚С‹ (0, 1, 2)
+	unsigned short key_num;                  // РєРѕР»РёС‡РµСЃС‚РІРѕ РєР»СЋС‡РµР№
+	unsigned int   left_node;                // СѓР·РµР» СЃР»РµРІР° (-1 РµСЃР»Рё РЅРµС‚)
+	unsigned int   right_node;               // СѓР·РµР» СЃРїСЂР°РІР° (-1 РµСЃР»Рё РЅРµС‚)
+	unsigned short free_space;               // СЃРІРѕР±РѕРґРЅРѕРµ РјРµСЃС‚Рѕ РІ keys_info
+	unsigned int   rec_num_mask;             // РјР°СЃРєР° РґР»СЏ РЅРѕРјРµСЂР° Р·Р°РїРёСЃРё
+	unsigned char  dup_mask;                 // РјР°СЃРєР° РґР»СЏ РґСѓР±РёСЂСѓСЋС‰РёС…СЃСЏ С‡Р°СЃС‚РµР№
+	unsigned char  trail_mask;               // РјР°СЃРєР° РґР»СЏ РЅРµРґСѓР±РёСЂСѓСЋС‰РёС…СЃСЏ С‡Р°СЃС‚РµР№
+	unsigned char  rec_num_bits;             // РєРѕР»РёС‡РµСЃС‚РІРѕ Р±РёС‚ РѕС‚РІРµС‡Р°СЋС‰РёС… Р·Р° РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
+	unsigned char  dup_bits;                 // РєРѕР»РёС‡РµСЃС‚РІРѕ Р±РёС‚ РѕС‚РІРµС‡Р°СЋС‰РёС… Р·Р° РґСѓР±Р»Рё
+	unsigned char  trail_bits;               // РєРѕР»РёС‡РµСЃС‚РІРѕ Р±РёС‚ РѕС‚РІРµС‡Р°СЋС‰РёС… Р·Р° РЅРµРґСѓР±Р»Рё
+	unsigned char  rec_num_dup_trail_size;   // РєРѕР»РёС‡РµСЃС‚РІРѕ С…СЂР°РЅСЏС‰РёС… РЅРѕРјРµСЂ Р·Р°РїРёСЃРё + РґСѓР±Р»Рё + РЅРµРґСѓР±Р»Рё 
+	unsigned char  keys_info[488];           // РёРЅС„РѕСЂРјР°С†РёСЏ Рѕ РєР»СЋС‡Р°С…
 };
 
 struct cdx_key_t
@@ -64,24 +64,24 @@ struct cdx_key_t
 
 /* 
 
-Пример
+РџСЂРёРјРµСЂ
 
-rec_num_mask           = 0x0000FFFF   номер записи                                  - 2 байта
-dup_mask               = 0x0F         дубли                                         - полбайта
-trail_mask             = 0x0F         недубли                                       - полбайта
-rec_num_bits           = 0x10         размер номера записи в битах                  - 16 бит (2 байта)
-dup_bits               = 0x4          размер количества дублей                      - 4 бита
-trail_bits             = 0x4          размер количества недублей                    - 4 бита
-rec_num_dup_trail_size = 0x3          размер номера записи,дублей,недублей в байтах - 3 байта
+rec_num_mask           = 0x0000FFFF   РЅРѕРјРµСЂ Р·Р°РїРёСЃРё                                  - 2 Р±Р°Р№С‚Р°
+dup_mask               = 0x0F         РґСѓР±Р»Рё                                         - РїРѕР»Р±Р°Р№С‚Р°
+trail_mask             = 0x0F         РЅРµРґСѓР±Р»Рё                                       - РїРѕР»Р±Р°Р№С‚Р°
+rec_num_bits           = 0x10         СЂР°Р·РјРµСЂ РЅРѕРјРµСЂР° Р·Р°РїРёСЃРё РІ Р±РёС‚Р°С…                  - 16 Р±РёС‚ (2 Р±Р°Р№С‚Р°)
+dup_bits               = 0x4          СЂР°Р·РјРµСЂ РєРѕР»РёС‡РµСЃС‚РІР° РґСѓР±Р»РµР№                      - 4 Р±РёС‚Р°
+trail_bits             = 0x4          СЂР°Р·РјРµСЂ РєРѕР»РёС‡РµСЃС‚РІР° РЅРµРґСѓР±Р»РµР№                    - 4 Р±РёС‚Р°
+rec_num_dup_trail_size = 0x3          СЂР°Р·РјРµСЂ РЅРѕРјРµСЂР° Р·Р°РїРёСЃРё,РґСѓР±Р»РµР№,РЅРµРґСѓР±Р»РµР№ РІ Р±Р°Р№С‚Р°С… - 3 Р±Р°Р№С‚Р°
 
 
-1) читаем из блок keys_info размером rec_num_dup_trail_size
-2) применяем к значению rec_num_mask - это будет номер записи
-3) сдвигаем значение вправо на rec_num_bits
-4) применяем к значению dup_mask - это будет количество дублей
-5) сдвигаем значение вправо на dup_bits
-6) применяем к значению trail_mask - 10 минус полученное значение будет количество недублей
-7) повторяем все key_num раз
+1) С‡РёС‚Р°РµРј РёР· Р±Р»РѕРє keys_info СЂР°Р·РјРµСЂРѕРј rec_num_dup_trail_size
+2) РїСЂРёРјРµРЅСЏРµРј Рє Р·РЅР°С‡РµРЅРёСЋ rec_num_mask - СЌС‚Рѕ Р±СѓРґРµС‚ РЅРѕРјРµСЂ Р·Р°РїРёСЃРё
+3) СЃРґРІРёРіР°РµРј Р·РЅР°С‡РµРЅРёРµ РІРїСЂР°РІРѕ РЅР° rec_num_bits
+4) РїСЂРёРјРµРЅСЏРµРј Рє Р·РЅР°С‡РµРЅРёСЋ dup_mask - СЌС‚Рѕ Р±СѓРґРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РґСѓР±Р»РµР№
+5) СЃРґРІРёРіР°РµРј Р·РЅР°С‡РµРЅРёРµ РІРїСЂР°РІРѕ РЅР° dup_bits
+6) РїСЂРёРјРµРЅСЏРµРј Рє Р·РЅР°С‡РµРЅРёСЋ trail_mask - 10 РјРёРЅСѓСЃ РїРѕР»СѓС‡РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ Р±СѓРґРµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РЅРµРґСѓР±Р»РµР№
+7) РїРѕРІС‚РѕСЂСЏРµРј РІСЃРµ key_num СЂР°Р·
 
 */
 
@@ -102,14 +102,14 @@ public:
 	cdx_header_t         m_Header;
 
 protected:
-	char                 m_szFileName[MAX_PATH];  // Имя индексного файла
-	HANDLE               m_hFile;                 // Описатель файла
+	char                 m_szFileName[MAX_PATH];  // РРјСЏ РёРЅРґРµРєСЃРЅРѕРіРѕ С„Р°Р№Р»Р°
+	HANDLE               m_hFile;                 // РћРїРёСЃР°С‚РµР»СЊ С„Р°Р№Р»Р°
 	unsigned int         m_FileSize;
-	vector <cdx_key_t *> m_Tags;                  // Тэги
+	vector <cdx_key_t *> m_Tags;                  // РўСЌРіРё
 	unsigned int         m_TagsCount;
 
-	int                  m_nErrorCode;            // код ошибки
-	string               m_sErrorMessage;         // сообщение ошибки
+	int                  m_nErrorCode;            // РєРѕРґ РѕС€РёР±РєРё
+	string               m_sErrorMessage;         // СЃРѕРѕР±С‰РµРЅРёРµ РѕС€РёР±РєРё
  
 	bool ReadHeader( unsigned int nAddress, cdx_header_t *Header );
 	bool ReadTags( );
