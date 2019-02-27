@@ -4,11 +4,7 @@
 int main( )
 {
     CDBFTable table;
-	
-	int a = 10;
-	
-	int b = a + 5;
-    
+
     if ( table.Open("user.dbf") )
     {
         table.GoTop();
