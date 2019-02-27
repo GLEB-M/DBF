@@ -19,9 +19,9 @@ int main( )
                 // error
             }
             
-            printf("%d\n", table.GetInteger("id"));        // get integer
-            printf("%s\n", table.GetChar("name"));         // get char
-            printf("%f\n", table.GetNumeric(2));           // get numeric (by field index)
+            printf("%d\n", table.GetInteger("id"));        // get integer by field name
+            printf("%s\n", table.GetChar("name"));         // get char by field name
+            printf("%f\n", table.GetNumeric(2));           // get numeric by field index
             
             unsigned int size;
             const void *m = table.GetMemo("note", &size);  // get MEMO data
