@@ -126,4 +126,4 @@ protected:
 	friend void TagEnumProc( cdx_key_t *Key, void *Param );
 };
 
-#endif
+#endif // _CDX_H_

@@ -222,4 +222,4 @@ protected:
 	bool Set( int nRecNo );                           // Установка позиции
 };
 
-#endif
+#endif // _DBF_H_

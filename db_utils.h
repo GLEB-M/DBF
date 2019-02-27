@@ -51,4 +51,4 @@ namespace DBUtils
 	string ErrorMessage( DWORD dwErrorCode );
 }
 
-#endif
+#endif // _DB_UTILS_
