@@ -31,7 +31,7 @@ int main( )
                 // size - MEMO size
                 // Don't free this memory pointer!
                 // It will be reallocated during next call and released when table closed.
-                // Just copy data in another buffer.
+                // Just copy data in your buffer.
             }
             
             table.Skip(); // next record
