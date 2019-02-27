@@ -263,7 +263,7 @@ bool CDBFTable::Lock( )
 			return true;
 
 		if ( !attempts-- )
-            break;
+			break;
 
 		Sleep(m_LockAttemptWait);
 	}
