@@ -12,7 +12,8 @@ int main( )
         {
             if ( !table.Read() ) // read record data
             {
-                // error
+                // error ...
+                return 1;
             }
             
             printf("%d\n", table.GetInteger("id"));        // get integer
