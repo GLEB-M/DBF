@@ -1,5 +1,5 @@
 # DBF
-Read Visual FoxPro tables
+Reading Visual FoxPro tables
 
 ```c++
 #include <stdio.h>
